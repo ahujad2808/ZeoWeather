@@ -22,14 +22,14 @@ function LoginData({ history }) {
 
 
     const data = { 'Username': Username, 'Password': Password };
-    axios.post('http://localhost:5000/loginCredentials', data)
+    axios.post('http://localhost:5100/loginCredentials', data)
       .then(response => {
 
         console.log(Username, Password)
 
         if (response.data === 'successful') {
 
-          axios.post('http://localhost:5000/activeUsers', data)
+          axios.post('http://localhost:5100/activeUsers', data)
             .then(response => {
 
               if (response.data === 'added') {
@@ -90,7 +90,7 @@ export default function LoadLoginPage() {
 
           </div>
           <div className="Welcome-heading">
-            <div className="heading"> Welcome to Weather<span style={{ color: 'White' }}>Sense</span></div>
+            <div className="heading"> Welcome to Zeo<span style={{ color: 'White' }}>Weather</span></div>
             <div id="login">
               <LoginWithRouter />
             </div>

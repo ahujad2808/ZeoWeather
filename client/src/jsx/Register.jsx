@@ -21,7 +21,7 @@ function RegisterData({ history }) {
       event.preventDefault(); // Prevent the default form submission behavior
 
       const data = { 'Username': Email, 'Password': Password, 'Name': Name, 'City': City };
-      axios.post('http://localhost:5000/registerCredentials', data)
+      axios.post('http://localhost:5100/registerCredentials', data)
           .then(response => {
 
               console.log(response.data);

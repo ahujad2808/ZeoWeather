@@ -1,12 +1,13 @@
 const { MongoClient } = require("mongodb");
 
-const url = "Enter your MongoDB url";
+const url = "mongodb+srv://dev-new-id:hellodev@webdevelopment.cupcivg.mongodb.net/?retryWrites=true&w=majority&appName=WebDevelopment"
 const client = new MongoClient(url);
 
 async function ActiveUsers(Username, Password) {
     try {
         await client.connect();
-
+        console.log("database conected");
+        
         const db = client.db('WeatherSenseDB');
         const col1 = db.collection('LoginAuthentication');
         const col2 = db.collection('ActiveUsers');

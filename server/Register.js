@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 
-const url = "Enter your MongoDB url";
+const url = "mongodb+srv://dev-new-id:hellodev@webdevelopment.cupcivg.mongodb.net/?retryWrites=true&w=majority&appName=WebDevelopment"
 const client = new MongoClient(url);
 
 async function RegisterCred(Username, Password, Name, City) {

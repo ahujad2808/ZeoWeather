@@ -4,6 +4,7 @@ import axios from 'axios';
 import WindGraph from './Radialbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
+import e from 'cors';
 
 function Dashboard() {
 	const [Name, setName] = useState('admin');
@@ -29,6 +30,7 @@ function Dashboard() {
 	const [WindDeg, setWindDeg] = useState(270);
 	const [WindDir, setWindDir] = useState('N');
 	const [Humidity, setHumidity] = useState('N');
+	const [main, setmain] = useState('N');
 
 
 	useEffect(() => {
@@ -48,7 +50,40 @@ function Dashboard() {
 	const fetchData = () => {
 		const data = 'Active user details';
 		axios
-			.get('http://localhost:5000/loadDashboard', data)
+			.get('http://localhost:5100/loadDashboard', data)
+			.then((response) => {
+				console.log(response);
+
+				setName(response.data.result.Name);
+				setEmail(response.data.result.Username);
+				setLocation(response.data.WeatherData.Location);
+				setCloud(response.data.WeatherData.Cloud);
+				setTemp(response.data.WeatherData.Temp);
+				setFeelsLike(response.data.WeatherData.FeelsLike);
+				setGust(response.data.WeatherData.Gust);
+				setLatitude(response.data.WeatherData.Latitude);
+				setLongitude(response.data.WeatherData.Longitude);
+				setPressure(response.data.WeatherData.Pressure);
+				setVisibility(response.data.WeatherData.Visibility);
+				setGust(response.data.WeatherData.Gust);
+				setWind(response.data.WeatherData.Wind);
+				setWindDeg(response.data.WeatherData.WindDeg);
+				setWindDir(response.data.WeatherData.WindDir);
+				setUVIndex(response.data.WeatherData.UV);
+				setTime(response.data.WeatherData.Time);
+				setHumidity(response.data.WeatherData.Humidity)
+				setmain(response.data.WeatherData.Cloud);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	};
+
+	const fetchData1 = (e) => {
+		const data = 'Active user details';
+		const loc = e;
+		axios
+			.get('http://localhost:5100/loadDashboard', data)
 			.then((response) => {
 				console.log(response);
 
@@ -142,6 +177,75 @@ function Dashboard() {
 			setFeelsLike((((FeelsLike - 32) * 5) / 9).toFixed(1));
 		}
 	}
+    const [newlocation, setnewlocation] = useState("");
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		// console.log(newlocation);
+		// const a = JSON.stringify({
+		// 	loc: newlocation,
+		//   })
+		// console.log(a);
+		// try {
+		// 	let req = await fetch("http://localhost:5100/changelocation", {
+		// 	  method: "POST",
+		// 	  body: JSON.stringify({
+		// 		loc: newlocation,
+		// 	  }),
+		// 	});
+		// 	const resJson = await req.json();
+		// 	if (req.status === 200) {
+		// 	  console.log("hogyiiii");
+		// 	} else {
+		// 		console.log("tere bas ki ni");
+		// 	}
+		//   } catch (err) {
+		// 	console.log(err);
+		//   }
+	const data = { 'loc': newlocation };
+	axios.post('http://localhost:5100/changelocation', data).then(response => {
+        
+        console.log(response)
+        
+        if (response.data ) {
+
+          axios.post('http://localhost:5100/changelocation', data)
+            .then(response => {
+                console.log(response.data);
+				console.log(response);
+				console.log(response);
+				setName(response.data.result.Name);
+				setEmail(response.data.result.Username);
+				setLocation(response.data.WeatherData.Location);
+				setCloud(response.data.WeatherData.Cloud);
+				setTemp(response.data.WeatherData.Temp);
+				setFeelsLike(response.data.WeatherData.FeelsLike);
+				setGust(response.data.WeatherData.Gust);
+				setLatitude(response.data.WeatherData.Latitude);
+				setLongitude(response.data.WeatherData.Longitude);
+				setPressure(response.data.WeatherData.Pressure);
+				setVisibility(response.data.WeatherData.Visibility);
+				setGust(response.data.WeatherData.Gust);
+				setWind(response.data.WeatherData.Wind);
+				setWindDeg(response.data.WeatherData.WindDeg);
+				setWindDir(response.data.WeatherData.WindDir);
+				setUVIndex(response.data.WeatherData.UV);
+				setTime(response.data.WeatherData.Time);
+				setHumidity(response.data.WeatherData.Humidity)
+            })
+            .catch(error => {
+              console.error(error);
+            });
+
+
+           // Replace "/a" with the desired redirect URL
+
+
+        } 
+      })
+      .catch(error => {
+        console.error(error);
+      });
+	}
 
 	return (
 		<>
@@ -155,6 +259,17 @@ function Dashboard() {
 
 							</div>
 							<div className="Location">{Location}</div>
+							<div className="Location"> <label for="language">Select a Location:</label>
+							<form method="POST" onSubmit={handleSubmit} >
+							<select name="language" onChange={(e) => setnewlocation(e.currentTarget.value)}  id="language">
+							  <option value="Delhi" selected>Delhi</option>
+							  <option value="Mumbai">Mumbai</option>
+							  <option value="Chennai">Chennai</option>
+							  <option value="Bangalore">Bangalore</option>
+							  <option value="Kolkata">Kolkata</option>
+							  <option value="Hyderabad">Hyderabad</option>
+							  
+							</select> <input type="submit" value="Submit"></input></form></div>
 							<br></br>
 							<div className="Latitude">{`Latitiude: ${Latitude}`}</div>
 							<div className="Longitude">{`Longitude: ${Longitude}`}</div>
@@ -180,11 +295,8 @@ function Dashboard() {
 								<div id="visVal">{Visibility} </div>
 							</div>
 							<div className="Gust">
-								<div>WindGust</div>
-								<div className="unit" id="gustUnit" onClick={GustChange}>
-									{GustUnit}
-								</div>
-								<div id="gustVal">{Gust} </div>
+								<div>{main}</div>
+								
 							</div>
 						</div>
 					</div>

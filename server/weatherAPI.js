@@ -1,43 +1,96 @@
 const axios = require('axios');
+const WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5';
+const WEATHER_API_KEY = '2f085eb44d26b273142b9223af5441c4';
 
+const GEO_API_OPTIONS = {
+  method: 'GET',
+  headers: {
+    'X-RapidAPI-Key': '2f085eb44d26b273142b9223af5441c4',
+    'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
+  },
+};
+
+ async function fetchWeatherData(lat, lon) {
+  try {
+    let [weatherPromise, forcastPromise] = await Promise.all([
+      fetch(
+        `${WEATHER_API_URL}/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`
+      ),
+      fetch(
+        `${WEATHER_API_URL}/forecast?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`
+      ),
+    ]);
+
+    const weatherResponse = await weatherPromise.json();
+    
+    console.log(weatherResponse);
+  } catch (error) {
+    console.log(error);
+  }
+}
 const data = {};
-
+const apikey = "dfbe68ba920041bc841101441242507"
 async function FetchAPIdata(city) {
-  const options = {
-    method: 'GET',
-    url: 'https://weatherapi-com.p.rapidapi.com/current.json',
-    params: { q: city },
-    headers: {
-      'X-RapidAPI-Key': 'a2b8cee08fmshf8ce534fdf59941p1031e5jsn95fae70bda7a',
-      'X-RapidAPI-Key': 'Enter your API-KEY',
-
-      'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
-    }
-  };
+  var lat = 28.6667;
+  var lon = 77.2167;
+  
+  var response;
+  if( city == "Kolkata" ){
+     lat = 22.5697;
+     lon = 88.3697
+  }
+  if( city == "Bangalore" ){
+    lat = 12.9762;
+    lon = 77.6033;
+ }
+ if( city == "Chennai" ){
+  lat = 13.0878; 
+  lon = 80.2785;
+}
+if( city == "Mumbai" ){
+  lat = 19.0144;
+  lon = 72.8479;
+}
+if( city == "Hyderabad" ){
+  lat = 17.3753;
+  lon = 78.4744;
+}
 
   try {
-    const response = await axios.request(options);
+    let [weatherPromise] = await Promise.all([
+      fetch(
+        `${WEATHER_API_URL}/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`
+      ),
+      fetch(
+        `${WEATHER_API_URL}/forecast?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`
+      ),
+    ]);
 
-    console.log(response)
+    const res = await weatherPromise.json();
+    response = res;
+    
+  } catch (error) {
+    console.log(error);
+  }
 
-    data.Cloud = response.data.current.cloud
-    data.Time = response.data.location.localtime
-    data.UV = response.data.current.uv;
-    data.Temp = response.data.current.temp_c;
-    data.FeelsLike = response.data.current.feelslike_c;
-    data.Wind = response.data.current.wind_mph;
-    data.Pressure = response.data.current.pressure_mb;
-    data.Visibility = response.data.current.vis_km;
-    data.Gust = response.data.current.gust_mph;
-    data.Location = response.data.location.name + ', ' + response.data.location.region + ', ' +  response.data.location.country 
-    data.Longitude = response.data.location.lat;;
-    data.Latitude = response.data.location.lon;;
-    data.WindDeg = response.data.current.wind_degree;
-    data.WindDir = response.data.current.wind_dir;
-    data.Precipitation = response.data.current.precip_in;
-    data.Localtime = response.data.location.localtime;
-    data.UV = response.data.current.uv;
-    data.Humidity = response.data.current.humidity;
+  try {
+    
+
+    //console.log(weatherPromise)
+    //console.log(response.wind.speed);
+    data.Cloud = response.weather[0].main;
+    data.Temp = response.main.temp;
+    data.FeelsLike = response.main.feels_like;
+    data.Wind = response.wind.speed;
+    data.Pressure = response.main.pressure;
+    data.Visibility = response.visibility;
+    data.Gust = response.wind.gust;
+    data.Location = response.name;
+    data.Longitude = lat;
+    data.Latitude = lon;
+    data.WindDeg = response.wind.deg;
+    data.Localtime = response.timezone;
+    data.Humidity = response.main.humidity;
 
 
 
