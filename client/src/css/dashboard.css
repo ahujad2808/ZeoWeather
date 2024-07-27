@@ -24,17 +24,17 @@
 
 
 .dash-left-section {
-    height: 80vh;
+    height: 90vh;
     width: 20vw;
-    border-radius: 1em;
+    border-radius: 0.5em;
     background-color: rgb(1, 66, 106);
 }
 
 .dash-right-section {
 
     /* background-color: rgb(169, 222, 243); */
-    border-radius: 1.4em 0.5em 0.5em 1.4em;
-    height: 79.5vh;
+    border-radius: 1.4em 0.5em 0.5em 0em;
+    height: 89.5vh;
     width: 80vw;
     font-size: 2.5vw;
     font-weight: 600;
@@ -50,12 +50,26 @@
 
 .Other-Weather-Section {
     /* background-color: greenyellow; */
-    height: 40%;
+    height: 20%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
 
+}
+
+.notif{
+    height: 20%;
+    display: flex;
+    color: white;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 10px;
+}
+
+.label{
+    width: 100px;
 }
 
 .Pressure, .Visibility, .Gust{

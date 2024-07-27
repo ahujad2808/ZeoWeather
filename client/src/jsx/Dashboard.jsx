@@ -5,6 +5,7 @@ import WindGraph from './Radialbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import e from 'cors';
+//const nodemailer = require("nodemailer");
 
 function Dashboard() {
 	const [Name, setName] = useState('admin');
@@ -47,15 +48,19 @@ function Dashboard() {
 		};
 	}, []);
 
+	
+
 	const fetchData = () => {
 		const data = 'Active user details';
 		axios
 			.get('http://localhost:5100/loadDashboard', data)
 			.then((response) => {
-				console.log(response);
+				console.log(response.data.result[0].Name);
+                
+                
 
-				setName(response.data.result.Name);
-				setEmail(response.data.result.Username);
+				setName(response.data.result[0].Name);
+				setEmail(response.data.result[0].Username);
 				setLocation(response.data.WeatherData.Location);
 				setCloud(response.data.WeatherData.Cloud);
 				setTemp(response.data.WeatherData.Temp);
@@ -246,6 +251,14 @@ function Dashboard() {
         console.error(error);
       });
 	}
+    
+	const [alerttemperature, setalertTemperature] = useState('');
+	//const [alerthumidity, setalertHumidity] = useState('');
+
+	const handleSave = async () => {
+		await axios.post('http://localhost:5100/alert-thresholds', { alerttemperature });
+		alert('Thresholds saved!');
+	};
 
 	return (
 		<>
@@ -298,6 +311,16 @@ function Dashboard() {
 								<div>{main}</div>
 								
 							</div>
+						</div>
+						<div className='notif'>
+						  <div >
+                            Set Alert Thresholds
+                            <div>
+                              <label >Temperature (°C):</label>
+                              <input className='label' type="number" value={alerttemperature} onChange={(e) => setalertTemperature(e.target.value)} />
+                            </div>
+                            <button onClick={handleSave} >Save</button>
+                          </div>
 						</div>
 					</div>
 					<div className="dash-right-section">

@@ -12,6 +12,7 @@ function RegisterData({ history }) {
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
   const [City, setCity] = useState('')
+  const [alertT, setalertT] = useState('')
 
   function SendRegisterData(event) {
     document.getElementById('Registerloader').style.display = 'block';
@@ -20,7 +21,7 @@ function RegisterData({ history }) {
 
       event.preventDefault(); // Prevent the default form submission behavior
 
-      const data = { 'Username': Email, 'Password': Password, 'Name': Name, 'City': City };
+      const data = { 'Username': Email, 'Password': Password, 'Name': Name, 'City': City, 'Alert': alertT };
       axios.post('http://localhost:5100/registerCredentials', data)
           .then(response => {
 
@@ -47,6 +48,7 @@ function RegisterData({ history }) {
           <input className='RegEmail' type="email" placeholder="Email" required onChange={(f) => setEmail(f.target.value)} />
           <input className='RegPassword' type="password" placeholder="Password" required onChange={(f) => setPassword(f.target.value)} />
           <input className='RegCity' type="text" placeholder="City" required onChange={(g) => setCity(g.target.value)} />
+          <input className='RegCity' type="number" placeholder="Alert Temp" required onChange={(g) => setalertT(g.target.value)} />
           <Link to="/login">
 
           <div className="ProfileExists" id="ProfileExists"> Profile already exists. Log in</div>

@@ -3,14 +3,14 @@ const { MongoClient } = require("mongodb");
 const url = "mongodb+srv://dev-new-id:hellodev@webdevelopment.cupcivg.mongodb.net/?retryWrites=true&w=majority&appName=WebDevelopment"
 const client = new MongoClient(url);
 
-async function RegisterCred(Username, Password, Name, City) {
+async function RegisterCred(Username, Password, Name, City, alertT) {
     try {
         await client.connect();
 
         const db = client.db('WeatherSenseDB');
         const col = db.collection('LoginAuthentication');
 
-        const query = { 'Username': Username, 'Password': Password, 'Name': Name, 'City': City };
+        const query = { 'Username': Username, 'Password': Password, 'Name': Name, 'City': City, 'AlertT': alertT };
         const result = await col.findOne(query);
 
     

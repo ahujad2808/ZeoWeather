@@ -18,10 +18,11 @@ async function ActiveUserDetails() {
     // };
 
     const result = await col.find({}).toArray();
+    console.log(result);
     delete result._id;
 
     if (result) {
-      return result[result.length - 1];
+      return result;
     } else {
       return 0;
     }

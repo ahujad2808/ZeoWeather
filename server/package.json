@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server",
     "dev": "nodemon server"
-
   },
   "repository": {
     "type": "git",
@@ -20,7 +19,8 @@
   },
   "homepage": "",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.14"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
