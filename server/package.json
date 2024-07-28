@@ -20,6 +20,7 @@
   "homepage": "",
   "dependencies": {
     "express": "^4.18.2",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14"
   },
   "devDependencies": {

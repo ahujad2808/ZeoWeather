@@ -8,6 +8,7 @@ const { RegisterCred } = require('./register');
 const { ActiveUsers } = require('./dashboard');
 const { ActiveUserDetails } = require('./activeUser');
 const { FetchAPIdata } = require('./weatherAPI')
+const cron = require('node-cron');
 
 app.use(cors());
 var flag = false;
@@ -15,6 +16,10 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://dev-new-id:hellodev@webdevelopment.cupcivg.mongodb.net/?appName=WebDevelopment";
+
+
+
+
 
 
 const transporter = nodemailer.createTransport({
@@ -101,7 +106,7 @@ app.post('/registerCredentials', async (req, res) => {
 
 app.get('/loadDashboard', async (req, res) => {
   const result = await ActiveUserDetails();
-  console.log(result);
+  // console.log(result);
   
   
   const  WeatherData = await FetchAPIdata(result.City);
@@ -113,8 +118,8 @@ app.get('/loadDashboard', async (req, res) => {
 
   finData = {result, WeatherData}
   
-  console.log('sending this data to frontend')
-  console.log(result)
+  // console.log('sending this data to frontend')
+  // console.log(result)
 
   res.send(finData);
 
@@ -122,7 +127,7 @@ app.get('/loadDashboard', async (req, res) => {
 
 app.post('/changelocation', async (req, res) => {
   const a = req.body;
-  console.log(a.loc);
+  // console.log(a.loc);
   const newloc = a.loc;
   const result = await ActiveUserDetails();
   const WeatherData = await FetchAPIdata(newloc);
@@ -134,8 +139,8 @@ app.post('/changelocation', async (req, res) => {
        flag = true;
    }
 
-  console.log('sending this data to frontend')
-  console.log(result[0].AlertT)
+  // console.log('sending this data to frontend')
+  // console.log(result[0].AlertT)
 
   res.send(finData);
   // const result = await ActiveUsers(Username, Password)
@@ -158,6 +163,78 @@ app.post('/activeUsers', async (req, res) => {
   }
 
 })
+
+async function SWW(username, weatherData) {
+  await client.connect();
+  const db = client.db('WeatherSenseDB');
+  const col = db.collection('HourlyWeatherData');
+  
+  const data = {
+    'username': username,
+    'temperature': weatherData.Temp,
+    'condition': weatherData.Cloud,
+    'timestamp': new Date()
+  };
+  await col.insertOne(data);
+  
+}
+
+cron.schedule('0 0 */1 * * *', async () => {
+  
+  const activeUsers = await ActiveUserDetails();
+  for (let user of activeUsers) {
+    const weatherData = await FetchAPIdata(user.City);
+    
+    await SWW(user.Username, weatherData);
+  }
+});
+
+
+cron.schedule('0 0 0 * * *', async () => {
+  await client.connect();
+  // console.log('Calculating daily aggregates');
+  const db = client.db('WeatherSenseDB');
+  const hourlyCollection = db.collection('HourlyWeatherData');
+  const dailyCollection = db.collection('DailyWeatherData');
+  
+  const activeUsers = await ActiveUserDetails();
+  for (let user of activeUsers) {
+    const userWeatherData = await hourlyCollection.find({
+      username: user.Username,
+      timestamp: { 
+        $gte: new Date(new Date().setHours(0, 0, 0, 0)), 
+        $lt: new Date(new Date().setHours(23, 59, 59, 999))
+      }
+    }).toArray();
+    
+    const temperatures = userWeatherData.map(data => data.temperature);
+    const conditions = userWeatherData.map(data => data.condition);
+
+    const avgTemp = temperatures.reduce((a, b) => a + b, 0) / temperatures.length;
+    const maxTemp = Math.max(...temperatures);
+    const minTemp = Math.min(...temperatures);
+    const dominantCondition = conditions.sort((a, b) =>
+      conditions.filter(v => v === a).length - conditions.filter(v => v === b).length
+    ).pop();
+
+    const dailySummary = {
+      username: user.Username,
+      date: new Date(new Date().setHours(0, 0, 0, 0)),
+      avgTemp: avgTemp,
+      maxTemp: maxTemp,
+      minTemp: minTemp,
+      dominantCondition: dominantCondition
+    };
+
+    await dailyCollection.insertOne(dailySummary);
+  }
+
+  await hourlyCollection.deleteMany({
+    timestamp: { 
+      $lt: new Date(new Date().setHours(0, 0, 0, 0))
+    }
+  });
+});
 
 app.listen(port, () => {
   console.log("server started")

@@ -55,7 +55,7 @@ function Dashboard() {
 		axios
 			.get('http://localhost:5100/loadDashboard', data)
 			.then((response) => {
-				console.log(response.data.result[0].Name);
+				//console.log(response.data.result[0].Name);
                 
                 
 
@@ -90,7 +90,7 @@ function Dashboard() {
 		axios
 			.get('http://localhost:5100/loadDashboard', data)
 			.then((response) => {
-				console.log(response);
+				
 
 				setName(response.data.result.Name);
 				setEmail(response.data.result.Username);
@@ -209,15 +209,14 @@ function Dashboard() {
 	const data = { 'loc': newlocation };
 	axios.post('http://localhost:5100/changelocation', data).then(response => {
         
-        console.log(response)
         
         if (response.data ) {
 
           axios.post('http://localhost:5100/changelocation', data)
             .then(response => {
-                console.log(response.data);
-				console.log(response);
-				console.log(response);
+                // console.log(response.data);
+				// console.log(response);
+				// console.log(response);
 				setName(response.data.result.Name);
 				setEmail(response.data.result.Username);
 				setLocation(response.data.WeatherData.Location);
@@ -312,16 +311,7 @@ function Dashboard() {
 								
 							</div>
 						</div>
-						<div className='notif'>
-						  <div >
-                            Set Alert Thresholds
-                            <div>
-                              <label >Temperature (°C):</label>
-                              <input className='label' type="number" value={alerttemperature} onChange={(e) => setalertTemperature(e.target.value)} />
-                            </div>
-                            <button onClick={handleSave} >Save</button>
-                          </div>
-						</div>
+						
 					</div>
 					<div className="dash-right-section">
 						<div className="dash-right-content">

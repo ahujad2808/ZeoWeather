@@ -18,7 +18,7 @@ async function ActiveUserDetails() {
     // };
 
     const result = await col.find({}).toArray();
-    console.log(result);
+    // console.log(result);
     delete result._id;
 
     if (result) {
